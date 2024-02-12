@@ -1,8 +1,5 @@
 import random
 
-dice_roll = random.randint(a=1, b=3)
-print(dice_roll)
-
 
 def num_check(question):
     valid = False
@@ -15,7 +12,7 @@ def num_check(question):
             response = int(input(question))
 
             # checks number is more than zero
-            if response > 13:
+            if response > 12:
                 print("You have chosen {} as your target score".format(response))
                 return response
 
@@ -59,6 +56,30 @@ def statement_generator(text, decoration):
     return ""
 
 
+def dice_roll():
+    result = random.randint(1, 6)
+    return result
+
+
+def two_rolls():
+    double_score = "no"
+
+    roll_1 = dice_roll()
+    roll_2 = dice_roll()
+
+    if roll_1 == roll_2:
+        double_score = "yes"
+
+    # total amount of points so far
+    user_points = roll_1 + roll_2
+
+    # show the result
+    print(f"Die 1: {roll_1}  Die 2: {roll_2}  Points: {user_points}")
+    print(f"Double score opportunity: {double_score}")
+
+    return user_points, double_score
+
+
 def instructions():
     statement_generator("Instructions/information", "-")
     print('''
@@ -96,28 +117,25 @@ yes_no("Would you like to see the instructions? ").lower()
 # Main routine goes here
 keep_going = ""
 while keep_going == "":
-
     target_score = num_check("Enter an integer that is 13 or more: ")
-    user_score = 0
-    double_score = False
     # dice
-    dice = input("Press <1> to roll the dice or any key to pass")
-    roll_1 = dice_roll
-    roll_2 = dice_roll
+    two_rolls()
     # double?
-    if roll_1 == roll_2:
-        double_score = True
-    # total amount of points so far
-    user_points = roll_1 + roll_2
-    # show the result
-    print(f"Die 1: {roll_1} \t Die 2: {roll_2} \t Points: {user_points}")
-    print(f"Double score opportunity: {double_score}")
-    dice = input("Press <1> to roll the dice or any key to pass")
 
-    print()
-    keep_going = input("Press <enter> to continue or any key to quit ")
-    print()
+how_many = int(input("How many dice? "))
 
+for item in range(0, 5):
+
+    if how_many == 2:
+        start_points = two_rolls()
+        points = start_points[0]
+        double_points = start_points[1]
+
+    if double_points == "no":
+
+        print(f"You have {points} points and a double ")
+
+    user_first = two_rolls()
 print()
 print("   Thank you for playing")
 statement_generator("Roll13", "🎲")

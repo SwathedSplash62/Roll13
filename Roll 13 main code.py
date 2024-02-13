@@ -57,11 +57,11 @@ def statement_generator(text, decoration):
 
 
 def dice_roll():
-    result = random.randint(1, 6)
-    return result
+    roll_result = random.randint(1, 6)
+    return roll_result
 
 
-def two_rolls():
+def two_rolls(who):
     double_score = "no"
 
     roll_1 = dice_roll()
@@ -71,13 +71,12 @@ def two_rolls():
         double_score = "yes"
 
     # total amount of points so far
-    user_points = roll_1 + roll_2
+    first_points = roll_1 + roll_2
 
     # show the result
-    print(f"Die 1: {roll_1}  Die 2: {roll_2}  Points: {user_points}")
-    print(f"Double score opportunity: {double_score}")
+    print(f"Die 1: {roll_1}  Die 2: {roll_2}")
 
-    return user_points, double_score
+    return first_points, double_score
 
 
 def instructions():
@@ -115,27 +114,93 @@ statement_generator("Roll13", "🎲")
 yes_no("Would you like to see the instructions? ").lower()
 
 # Main routine goes here
-keep_going = ""
-while keep_going == "":
-    target_score = num_check("Enter an integer that is 13 or more: ")
-    # dice
-    two_rolls()
-    # double?
+print("Press <enter> to begin this round: ")
+input()
 
-how_many = int(input("How many dice? "))
+# Get initial dice rolls for user
+user_first = two_rolls()
+user_points = user_first[0]
+double_points = user_first[1]
 
-for item in range(0, 5):
+# Tells the user if they are able to get those double points
+if double_points == "no":
+    double_feedback = ""
+else:
+    double_feedback = "If you win this round, you gain double points!))))"
 
-    if how_many == 2:
-        start_points = two_rolls()
-        points = start_points[0]
-        double_points = start_points[1]
+# output initial move results
+print(f"You rolled a total of {user_points}. {double_feedback}")
+print()
 
-    if double_points == "no":
+# Get the first dice rolls from the computer
+computer_first = two_rolls()
+computer_points = computer_first[0]
 
-        print(f"You have {points} points and a double ")
+print(f"The computer rolled a total of {computer_points}.")
 
-    user_first = two_rolls()
+# Loop (while both user / computer have <= 13 points)....
+
+while computer_points < 13 and user_points < 13:
+
+    # ask user if the want to roll again, update points and status
+    print()
+    roll_again = input("Do you want to roll the dice (type 'no' to pass): ")
+    if roll_again == "yes":
+        user_move = dice_roll()
+        user_points += user_move
+
+        if user_points > 13:
+            print(f"YOU FOOL, YOU WERE UNLUCKY, having rolled a {user_move} "
+                  f"so you unfortunately have a total of {user_points}. The name of the game being 🎲🎲🎲Roll13🎲🎲🎲, "
+                  f"you are over"
+                  f"and have such lost")
+
+            user_points = 0
+
+            break
+
+        else:
+            print(f"You rolled one of them {user_move} and got a whole {user_points}")
+
+    # roll dice for comp and update comp points
+    computer_move = dice_roll()
+    computer_points += computer_move
+    if computer_points > 13:
+        print(f"THAT FOOL, IT T'WAS UNLUCKY, having rolled a {computer_move} "
+              f"so it fortunately has a total of {computer_points}. The name of the game being 🎲🎲🎲Roll13🎲🎲🎲, "
+              f"it is over"
+              f"and you have won")
+
+        computer_points = 0
+
+        break
+    else:
+        print(f"This damn machine just got {computer_move}. Adding for a whole {computer_points}.")
+
+    print()
+    if user_points > computer_points:
+        result = "You are currently better than the robot"
+    elif user_points < computer_points:
+        result = "You are currently worse than the robot"
+    else:
+        result = "You both currently suck"
+
+    statement_generator("Status update", "🐰🐰")
+    print(f"{result}")
+    print(f"User Score: {user_points} \t | \t Computer Score; {computer_points}")
+
+# Outside loop - double user points if  they won and are eligible
+
+# Le result
+if user_points < computer_points:
+    print("You have seen bested by thy metallic entity, "
+          "thus no points have been added to your total score. Unfortunately meaning that your opposition has received"
+          f" {computer_points} points.")
+
+# Don't have them double points
+else:
+    print(f"You have better than that machine in the machine and gotten those {user_points} points")
+
 print()
 print("   Thank you for playing")
 statement_generator("Roll13", "🎲")

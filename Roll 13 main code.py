@@ -2,7 +2,13 @@ import random
 
 
 def get_stats(stats_list):
-    pass
+    stats_list.sort()
+
+    lowest_score = stats_list[0]
+    highest_score = stats_list[-1]
+    average_score = sum(stats_list) / len(stats_list)
+
+    return [lowest_score, highest_score, average_score]
 
 
 # calculate the lowest highest and average scores and display them
@@ -128,20 +134,23 @@ Once you are happy with your number of points, you can ‘pass’.
     return ""
 
 
-# Heading
-statement_generator("Roll13", "🎲")
-
-# Displays instructions if user has not used the program before
-yes_no_instructions("Would you like to see the instructions? ").lower()
-
-# Main routine goes here
-
 # initial scores for both parties / also number of rounds
 user_score = 0
 computer_score = 0
 
 num_rounds = 0
 
+user_scores = []
+comp_scores = []
+game_history = []
+
+# Main routine goes here
+
+# Heading
+statement_generator("Roll13", "🎲")
+
+# Displays instructions if user has not used the program before
+yes_no_instructions("Would you like to see the instructions? ").lower()
 target_score = num_check("Enter a target score: ")
 print(target_score)
 
@@ -221,7 +230,7 @@ while user_score < target_score and computer_score < target_score:
             user_pass = "yes"
 
         # comp free will
-        if computer_points >= 10 and computer_points >= user_points:
+        if computer_points >= 10 and computer_points >= user_points and user_pass >= "no":
             computer_pass = "yes"
             print("The computer, assured in it's advantage has passed")
 
@@ -285,6 +294,8 @@ while user_score < target_score and computer_score < target_score:
 
         add_points = user_points
 
+    round_result = f"Round {num_rounds} - User {user_points} \t Computer: {computer_points}"
+    game_history.append(round_result)
     # End of a single round
 
     # If the computer wins, add its points to its score
@@ -300,10 +311,36 @@ while user_score < target_score and computer_score < target_score:
         computer_score += add_points
         user_score += add_points
 
+        user_scores.append(user_score)
+        comp_scores.append(computer_score)
+
     print()
+    print(f"🎲🎲🎲 User: {user_score} points | Computer: {computer_score} points 🎲🎲🎲 ")
     print()
 
-print(f"🎲🎲🎲 User: {user_score} points | Computer: {computer_score} points 🎲🎲🎲 ")
+print()
+print(f"Your final score is {user_score}")
+
+# game lore
+show_history = yes_no("Do you want to see the game history")
+if show_history == "yes":
+    print("\n🎃🎃🎃 Game History 🎃🎃🎃")
+
+    for item in game_history:
+        print(item)
+
+    print()
+
+
+# Behol, stats
+user_stats = get_stats(user_scores)
+comp_stats = get_stats(comp_scores)
+
+print("📈📈📈 Game Statistics 📈📈📈")
+print(f"User -     Lowest Score:, {user_stats[0]}\t Highest Score; {user_stats[1]}\t Average Scores: {user_stats[2]:.2f}")
+
+print(f"Computer - Lowest Score:{comp_stats[0]}\t Highest Score: {comp_stats[1]}\t Average Scores: {user_stats[2]:.2f}")
+
 print("   Thank you for playing")
 statement_generator("Roll13", "🎲")
 print()
